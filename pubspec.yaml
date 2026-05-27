@@ -1,18 +1,20 @@
 workflows:
-  default-workflow:
-    name: Default Workflow
+  web_build:
+    name: Web Build
     instance_type: linux
     max_build_duration: 30
     environment:
-      flutter: stable
+      flutter: 3.24.0  # 锁定一个稳定版本，避免自动升版炸
     scripts:
-      - name: Build Flutter Web
-        script: |
-          flutter pub get
-          flutter build web --release
+      - name: Clean
+        script: flutter clean
+      - name: Get dependencies
+        script: flutter pub get --no-cache  # 不读缓存，强制重新拉
+      - name: Build web
+        script: flutter build web --release
     artifacts:
-      - build/web/**  # 关键：告诉 Codemagic 把 web 文件夹打包成产物
+      - build/web/**
     publishing:
       codemagic_static_pages:
         enabled: true
-        subdomain: troll-demo-xxx  # 随便写个名字，比如 troll-demo-你的名字
+        subdomain: troll-flutter-demo-2026
